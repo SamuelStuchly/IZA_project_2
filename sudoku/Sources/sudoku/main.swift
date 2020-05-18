@@ -4,17 +4,17 @@ print("Hello, world!")
  //var board = Array(repeating: Array(repeating: 0, count: 9), count: 9)
 
 var board = [
-    [0,3,0,0,0,8,1,6,0],
-    [0,0,5,1,0,2,0,0,9],
-    [0,0,0,7,0,4,0,0,0],
+    [0,0,0,0,0,7,0,0,3],
+    [0,0,0,9,1,0,0,0,0],
+    [1,0,0,0,0,3,2,0,4],
 
-    [0,0,0,0,2,0,0,1,3],
-    [0,0,2,9,0,5,6,8,7],
-    [0,0,7,0,0,3,0,0,0],
+    [0,8,0,1,0,0,0,7,0],
+    [0,0,0,0,0,0,0,6,0],
+    [2,0,0,0,0,4,0,0,0],
 
-    [0,2,6,8,7,0,0,4,0],
-    [0,5,0,0,0,9,0,0,0],
-    [4,0,0,0,0,6,0,0,0]
+    [0,0,6,8,0,0,0,0,0],
+    [0,5,0,0,0,0,0,0,6],
+    [0,7,3,2,0,0,0,9,4]
 ]
 
 // function prints out board 
@@ -50,7 +50,7 @@ func getFirstEmptySpot() -> (column:Int,row:Int){
             }
         }
     }
-    print("NO MORE EMPTY SPACEs")
+    //print("NO MORE EMPTY SPACEs")
     return (-1,-1)
 }
 
@@ -185,7 +185,7 @@ func solver()-> Bool{
        //print("Value " + String(i))
         if isValid(number:i,position:(column:column,row:row)){
             board[row][column] = i
-            printBoard()
+            //printBoard()
             //print("SOLVER POSTUPUJE")
             
             if solver(){
@@ -205,8 +205,13 @@ func main(){
     print("\n =========================================\n")
     //setMediumBoard()
     printBoard()
-    print(solver())
-    printBoard()
+    if solver(){
+        print("Here is a solution :")
+        printBoard()
+    }else{
+        print("Given sudoku is unsolvable !")
+    }
+   
 }
 
 
