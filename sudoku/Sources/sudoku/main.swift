@@ -1,8 +1,6 @@
 import Foundation
 
 
-print("Hello, world!")
-
 enum MyError: Error {
     case runtimeError(String)
 }
@@ -11,8 +9,8 @@ enum MyError: Error {
  var board = Array(repeating: Array(repeating: 0, count: 9), count: 9)
 
 // function prints out board 
-func printBoard(){
-    print("         SUDOKU")
+func printBoard(text:String){
+    print(" " + text + " :")
     var rowCount = 0
     print("-------------------------")
     for row in board{
@@ -43,7 +41,6 @@ func getFirstEmptySpot() -> (column:Int,row:Int){
             }
         }
     }
-    //print("NO MORE EMPTY SPACEs")
     return (-1,-1)
 }
 
@@ -53,7 +50,6 @@ func isValid(number:Int,position:(column:Int,row:Int)) -> Bool {
 
     // check row 
     for i in 0..<board[position.row].count{
-        //print("Stlpec " + String(i))
         if board[position.row][i] == number && position.column != i{
             return false
         }
@@ -61,7 +57,6 @@ func isValid(number:Int,position:(column:Int,row:Int)) -> Bool {
 
     // check coulmn
     for i in 0..<board.count{
-        //print("Riadok " + String(i))
         if board[i][position.column] == number && position.row != i{
             return false
         }
@@ -70,27 +65,17 @@ func isValid(number:Int,position:(column:Int,row:Int)) -> Bool {
     // check box 
     let box_x = Int(position.column / 3)
     let box_y = Int(position.row / 3)
-    //print("V boxe")
-    //print(box_x)
-    //print(box_y)
+
 
     for i in (box_y*3)..<(box_y * 3 + 3){
         for j in (box_x*3)..<(box_x * 3 + 3){
             if board[i][j] == number && (i,j) != position{
-                // print(j)
-                // print(i)
-
-                // print(number)
-                // print(board[j])
-                
-                // print("som false z boxu")
-                // print((i,j) != position)
+             
                 return false
             }
         }
     }
 
-    //print("ISVALID")
     return true
 
 
@@ -98,10 +83,8 @@ func isValid(number:Int,position:(column:Int,row:Int)) -> Bool {
 
 
 func solver()-> Bool{
-    //print("IM in solver")
     let foundSpot = getFirstEmptySpot()
     if foundSpot == (-1,-1){
-        //print("KONCIM")
         return true
     }
     
@@ -111,11 +94,9 @@ func solver()-> Bool{
 
 
     for i in 1...9{
-       //print("Value " + String(i))
         if isValid(number:i,position:(column:column,row:row)){
             board[row][column] = i
-            //printBoard()
-            //print("SOLVER POSTUPUJE")
+            
             
             if solver(){
                 return true
@@ -125,15 +106,12 @@ func solver()-> Bool{
             }
         }
     }
-    //print("SOLVER sa vracia spat ==")
     return false
 }
 
 func parseFile(content:String) throws -> [[Int]]  {
     let rows = content.components(separatedBy:"\n")
-    //print(rows)
     var myBoard = rows.map{ $0.replacingOccurrences(of: " ", with: "") }
-    //print(myBoard)
 
     // read the file
     if myBoard[0] != "SUDOKU"{
@@ -142,9 +120,9 @@ func parseFile(content:String) throws -> [[Int]]  {
     }
     myBoard.removeFirst()
 
-    var lineSepArr = [0,4,8,12]
+    let lineSepArr = [0,4,8,12]
     for i in 0..<13{
-       var currentRow = Array(myBoard[i])
+       let currentRow = Array(myBoard[i])
        //print(currentRow)
        
        if lineSepArr.contains(i) {
@@ -168,7 +146,6 @@ func parseFile(content:String) throws -> [[Int]]  {
            }
        }
     }
-    print("board format ok")
     var boardWithoutSeperators = [String]()
 
     for i in 0..<13{
@@ -181,7 +158,6 @@ func parseFile(content:String) throws -> [[Int]]  {
             
         }
     }
-    //print(boardWithoutSeperators)
     var newBoard = [[Int]]()
     for i in boardWithoutSeperators{
         
@@ -191,17 +167,9 @@ func parseFile(content:String) throws -> [[Int]]  {
         row.remove(at:4 - 1)
         row.remove(at:8 - 2)
         row.remove(at:12 - 3)
-        var hello = row.map{ Int(String($0))! }
-        // print(hello)
-        // print(type(of:hello))
-        newBoard.append(hello)
-        
-        
-        
-
+        let intRow = row.map{ Int(String($0))! }
+        newBoard.append(intRow)
     }
-    
-    //print(newBoard)
     
     return newBoard
 
@@ -216,7 +184,6 @@ func openAndReadFile() -> [[Int]]{
     let path : String
     let args = CommandLine.arguments
     path = args[1]
-    print(path)
 
 // -------- open the file and get data---------
     
@@ -226,10 +193,8 @@ func openAndReadFile() -> [[Int]]{
     do {
         databuffer = try Data(contentsOf:filepath)
         if databuffer != nil{
-        str =  try String(decoding: databuffer!, as: UTF8.self)
-        print(str)
+        str =  String(decoding: databuffer!, as: UTF8.self)
     }
-        //print(type(of:databuffer))
     }
     catch{
         print("COULDNT READ THE FILE")
@@ -262,7 +227,6 @@ func isValidInput(myBoard:[[Int]]) -> Bool {
         }
 
     }
-    print("rows are fine")
 
     // coulmns are ok 
     for i in 0..<9{
@@ -276,7 +240,6 @@ func isValidInput(myBoard:[[Int]]) -> Bool {
         }
 
     }
-    print("columns are fine")
 
     // check box 
     for i in 0..<3{
@@ -295,25 +258,29 @@ func isValidInput(myBoard:[[Int]]) -> Bool {
                     valuesList.append(myBoard[i][j])
                 }
             }
-            //print(valuesList)
         }
     }
-    print("boxes are fine")
     return true
 }
 
+func printArrow(){
+    print("             ||")
+    print("             ||")
+    print("            \\  /")
+    print("             \\/")
+}
+
 func main(){
-    print("\n =========================================\n")
-    //setMediumBoard()
     board = openAndReadFile()
-    printBoard()
+    printBoard(text:"Given")
     if !isValidInput(myBoard:board){
         print("Solution not possible board invalid")
         return 
     }
+    printArrow()
+    
     if solver(){
-        print("Here is a solution :")
-        printBoard()
+        printBoard(text:"Solution")
     }else{
         print("Given sudoku is unsolvable !")
     }
@@ -325,6 +292,4 @@ func main(){
 // ========= MAIN ========= //
 main()
 
-// board = openAndReadFile()
-// print(isValidInput(myBoard:board))
 
