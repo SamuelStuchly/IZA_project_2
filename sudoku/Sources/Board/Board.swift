@@ -1,13 +1,29 @@
-public struct Board{
-    public var layout : [[Int]]
+//
+//  Board.swift
+//  sudoku
+//
+//  Created by Samuel Stuchly 18/05/2020.
+//
 
+/// Sudoku Board
+public struct Board{
+    /// layout of sudoku board
+    public var layout : [[Int]]
+   
+
+    /// Initialize Board with given layout
+    /// - Parameter layout: data for a board
     public init(layout: [[Int]]){
         self.layout = layout
     }
 
+    // Check if loaded board form input file is a valid sudoku board 
+    /// - Returns: true if it is valid sudoku board, false if not
     public func isValidInput() -> Bool {
 
-        // rows are ok 
+        
+
+        // check if values in rows follow sudoku rules
         for i in 0..<9{
             var valuesList = [Int]()
             for j in 0..<9{
@@ -16,33 +32,29 @@ public struct Board{
                 }
                 valuesList.append(self.layout[i][j])
             }
-
         }
 
-        // coulmns are ok 
+        // check if values in columns follow sudoku rules
         for i in 0..<9{
             var valuesList = [Int]()
             for j in 0..<9{
                 if self.layout[j][i] != 0 && valuesList.contains(self.layout[j][i]){
-                    
                     return false
                 }
                 valuesList.append(self.layout[j][i])
             }
-
         }
 
-        // check box 
+        // check if values in boxes follow sudoku rules
         for i in 0..<3{
             for j in 0..<3{
                 let box_x = i
                 let box_y = j
-            
+
                 var valuesList = [Int]()
                 for i in (box_y*3)..<(box_y * 3 + 3){
                     for j in (box_x*3)..<(box_x * 3 + 3){
                         if self.layout[i][j] != 0 && valuesList.contains(self.layout[i][j]){
-                        
                             return false
                         }
                         valuesList.append(self.layout[i][j])
@@ -50,13 +62,15 @@ public struct Board{
                 }
             }
         }
+        // no conflict of vlaues with sudoku rules found
         return true
     }
 
 
-        // function prints out board 
-    public func printBoard(text:String){
-        print(" " + text + " :")
+    /// Prints out board in a nice format
+    /// - Parameter title: specificatons before the board is printed
+    public func printBoard(title:String){
+        print(" " + title + " :")
         var rowCount = 0
         print("-------------------------")
         for row in self.layout{
@@ -78,6 +92,7 @@ public struct Board{
         }
     }
 
+    /// Prints out pretty arrow :) 
     public func printArrow(){
         print("             ||")
         print("             ||")

@@ -23,7 +23,7 @@ let package = Package(
             dependencies: []),
         .target(
             name: "Solver",
-            dependencies: []),
+            dependencies: ["Board"]),
         .testTarget(
             name: "sudokuTests",
             dependencies: ["sudoku"]),

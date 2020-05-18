@@ -1,13 +1,25 @@
+//
+//  main.swift
+//  sudoku
+//
+//  Created by Samuel Stuchly 18/05/2020.
+//
+
 import Foundation
 import Board
 import Parser
 import Solver
 
-
+/// Main 
 func main() -> Result<Void, RunError> {
-    // -- Get filepath -- //
+    
+    /// flag to set output to to validate only 
     let validateOnly : Bool
+
+    /// path to input file
     let path : String
+
+    // -- Parse arguments -- //
     let args = CommandLine.arguments
     if args.count != 2 {
         if args.count != 3{
@@ -24,24 +36,24 @@ func main() -> Result<Void, RunError> {
                 return .failure(.incorrectArguments)
             }
         }
-        //return .failure(.incorrectArguments)
     }else{
         path = args[1]
         validateOnly = false
     }
     
-    // -- Read sudoku file -- //
+    
+    // -- Get file path -- //
     let databuffer : Data?
     let filepath = URL(fileURLWithPath: path)
-    var str = ""
+    
+
+    // -- Read sudoku file -- //
+    var str = String()
     do {
         databuffer = try Data(contentsOf:filepath)
-        if databuffer != nil{
         str =  String(decoding: databuffer!, as: UTF8.self)
     }
-    }
     catch{
-       // print("COULDNT READ THE FILE")
         return .failure(.fileError)
     }
 
@@ -49,17 +61,17 @@ func main() -> Result<Void, RunError> {
     let parser = Parser()
     let board : Board
     do {
-        board = try parser.parseFile(content:str)
-    } catch{
-        return .failure(.missingTitle)
+        board = try parser.parseInput(content:str)
+    } catch { 
+        return .failure(.incorrectFormat)
     }
-    
-    board.printBoard(text:"Given")
    
 
-    
-    // -- print pretty arrow :) -- //
-    board.printArrow()
+    // -- print out given board -- //
+    board.printBoard(title:"Given")
+
+    // -- print arrow to look cool -- //
+    board.printArrow() 
 
     // -- Validate board -- //
     if !board.isValidInput(){
@@ -67,14 +79,15 @@ func main() -> Result<Void, RunError> {
         return .failure(.invalidSudoku)
     }
 
-    // -- Solve sudoku-- //
+    // -- Solve sudoku -- //
     var solver = Solver(board:board)
     let solvable = solver.solve()
     
+    // -- Print out result -- //
     if solvable{
         // dont print out board if we want to only validate 
         if !validateOnly{
-            solver.board.printBoard(text:"Solution")
+            solver.board.printBoard(title:"Solution")
         }
         else{
             print("Sudoku is solvable.")
@@ -89,7 +102,7 @@ func main() -> Result<Void, RunError> {
 
 
 
-// ========= MAIN ========= //
+// program body
 let result = main()
 
 switch result {
