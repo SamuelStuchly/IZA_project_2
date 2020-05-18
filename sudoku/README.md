@@ -13,7 +13,7 @@ This application can be used for getting a solution to a difficult sudoku puzzle
 Or with a use of `--validate-only` option, it can be used just as a validator, to check if part of your solution is on the right track, or you have already made a mistake somewhere and did not realize.
 
 ## Format of Sudoku file
-This application works with input files of specified format. Example file is here `sudoku_input_files/valid_sudoku.txt`.
+This application works with input files of specified format. Example file is here[`valid_sudoku.txt`](sudoku_input_files/valid_sudoku.txt).
 
 Sudoku file needs to have a title that says `SUDOKU` on the first line, and then a sudoku board of following format.
 ```
@@ -46,7 +46,7 @@ swift run sudoku <input-file-path> [--validate-only]
 ```
 The `--validate-only` option is set if you dont wish to see solved sudoku, only to display whether your input sudoku is on the right track or is, as input, unsolvable.
 
-In directory `sudoku_input_files` there are examples of sudokus having different kinds of issue and one valid. To see program work without your own data run :
+In directory [`sudoku_input_files`](sudoku_input_files) there are examples of sudokus having different kinds of issue and one valid. To see program work without your own data run :
 ```
 swift run sudoku sudoku_input_files/valid_sudoku.txt
 ```
