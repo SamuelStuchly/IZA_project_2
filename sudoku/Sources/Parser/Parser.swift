@@ -1,5 +1,8 @@
 import Foundation
 import Board
+
+
+
 public struct Parser{
 
     
@@ -7,14 +10,14 @@ public struct Parser{
     public init(){}
 
 
-   public func parseFile(content:String) -> Board  {
+   public func parseFile(content:String) throws -> Board  {
         let rows = content.components(separatedBy:"\n")
         var myBoard = rows.map{ $0.replacingOccurrences(of: " ", with: "") }
 
         // read the file
         if myBoard[0] != "SUDOKU"{
             print("MISSING TITLE")
-            //throw MyError.runtimeError("INCORRECT BOARD FORMAT")
+            throw "missing title"
         }
         myBoard.removeFirst()
 
@@ -73,3 +76,5 @@ public struct Parser{
         return returnedBoard
     }
 }
+
+extension String: Error {}

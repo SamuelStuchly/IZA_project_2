@@ -77,4 +77,11 @@ public struct Board{
 
         }
     }
+
+    public func printArrow(){
+        print("             ||")
+        print("             ||")
+        print("            \\  /")
+        print("             \\/")
+    }
 }
