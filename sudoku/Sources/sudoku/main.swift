@@ -1,6 +1,3 @@
-
-
-
 import Foundation
 
 
@@ -11,21 +8,7 @@ enum MyError: Error {
 }
 
 
- //var board = Array(repeating: Array(repeating: 0, count: 9), count: 9)
-
-var board = [
-    [0,0,0,0,0,7,0,0,3],
-    [0,0,0,9,1,0,0,0,0],
-    [1,0,0,0,0,3,2,0,4],
-
-    [0,8,0,1,0,0,0,7,0],
-    [0,0,0,0,0,0,0,6,0],
-    [2,0,0,0,0,4,0,0,0],
-
-    [0,0,6,8,0,0,0,0,0],
-    [0,5,0,0,0,0,0,0,6],
-    [0,7,3,2,0,0,0,9,0]
-]
+ var board = Array(repeating: Array(repeating: 0, count: 9), count: 9)
 
 // function prints out board 
 func printBoard(){
@@ -64,55 +47,6 @@ func getFirstEmptySpot() -> (column:Int,row:Int){
     return (-1,-1)
 }
 
-
-func setNumberInBoard(row : Int, column : Int, value : Int ) {
-    if value > 9 || value < 1 {
-        print("Incorrect value")
-    }
-    board[row-1][column-1] = value
-}
-
-func setMediumBoard(){
-    setNumberInBoard(row:9,column:1,value:4)
-
-
-    setNumberInBoard(row:1,column:2,value:3)
-    setNumberInBoard(row:7,column:2,value:2)
-    setNumberInBoard(row:8,column:2,value:5)
-
-    setNumberInBoard(row:2,column:3,value:5)
-    setNumberInBoard(row:5,column:3,value:2)
-    setNumberInBoard(row:6,column:3,value:7)
-    setNumberInBoard(row:7,column:3,value:6)
-
-    setNumberInBoard(row:2,column:4,value:1)
-    setNumberInBoard(row:3,column:4,value:7)
-    setNumberInBoard(row:5,column:4,value:9)
-    setNumberInBoard(row:7,column:4,value:8)
-
-    setNumberInBoard(row:4,column:5,value:2)
-    setNumberInBoard(row:7,column:5,value:7)
-
-    setNumberInBoard(row:1,column:6,value:8)
-    setNumberInBoard(row:2,column:6,value:2)
-    setNumberInBoard(row:3,column:6,value:4)
-    setNumberInBoard(row:5,column:6,value:5)
-    setNumberInBoard(row:6,column:6,value:3)
-    setNumberInBoard(row:8,column:6,value:9)
-    setNumberInBoard(row:9,column:6,value:6)
-    
-    setNumberInBoard(row:1,column:7,value:1)
-    setNumberInBoard(row:5,column:7,value:6)
-
-    setNumberInBoard(row:1,column:8,value:6)
-    setNumberInBoard(row:4,column:8,value:1)
-    setNumberInBoard(row:5,column:8,value:8)
-    setNumberInBoard(row:7,column:8,value:4)
-
-    setNumberInBoard(row:2,column:9,value:9)
-    setNumberInBoard(row:4,column:9,value:3)
-    setNumberInBoard(row:5,column:9,value:7)
-}
 
 
 func isValid(number:Int,position:(column:Int,row:Int)) -> Bool {
@@ -160,21 +94,6 @@ func isValid(number:Int,position:(column:Int,row:Int)) -> Bool {
     return true
 
 
-    // // check row 
-    // for (j,value) in board[position.1].enumerated(){
-    //     if value == number && j != position.0{
-    //         return false
-    //     } 
-    // }
-
-    // // check column
-    // for (j,value) in board[position.1].enumerated(){
-    //     if value == number && j != position.0{
-    //         return false
-    //     } 
-    // }
-
-
 }
 
 
@@ -210,7 +129,7 @@ func solver()-> Bool{
     return false
 }
 
-func parseFile(content:String) throws {
+func parseFile(content:String) throws -> [[Int]]  {
     let rows = content.components(separatedBy:"\n")
     //print(rows)
     var myBoard = rows.map{ $0.replacingOccurrences(of: " ", with: "") }
@@ -223,11 +142,11 @@ func parseFile(content:String) throws {
     }
     myBoard.removeFirst()
 
-       
+    var lineSepArr = [0,4,8,12]
     for i in 0..<13{
        var currentRow = Array(myBoard[i])
        //print(currentRow)
-       var lineSepArr = [0,4,8,12]
+       
        if lineSepArr.contains(i) {
            for j in currentRow{
                if j != "-"{
@@ -250,6 +169,41 @@ func parseFile(content:String) throws {
        }
     }
     print("board format ok")
+    var boardWithoutSeperators = [String]()
+
+    for i in 0..<13{
+        if lineSepArr.contains(i){
+            continue
+        } 
+        else{
+            boardWithoutSeperators.append(myBoard[i])
+           
+            
+        }
+    }
+    //print(boardWithoutSeperators)
+    var newBoard = [[Int]]()
+    for i in boardWithoutSeperators{
+        
+        var row = Array(i)
+        
+        row.remove(at:0)
+        row.remove(at:4 - 1)
+        row.remove(at:8 - 2)
+        row.remove(at:12 - 3)
+        var hello = row.map{ Int(String($0))! }
+        // print(hello)
+        // print(type(of:hello))
+        newBoard.append(hello)
+        
+        
+        
+
+    }
+    
+    //print(newBoard)
+    
+    return newBoard
 
 
     
@@ -258,7 +212,7 @@ func parseFile(content:String) throws {
 }
 
 
-func openAndReadFile(){
+func openAndReadFile() -> [[Int]]{
     let path : String
     let args = CommandLine.arguments
     path = args[1]
@@ -282,22 +236,81 @@ func openAndReadFile(){
          //return .failure(.fileError)
     }
     do {
-        try parseFile(content:str)
+        let board = try parseFile(content:str)
+        return board
     }
     catch {
         print("Incorrect format")
     }
 
    
-   
+   return [[]]
    
 }
 
 
+func isValidInput(myBoard:[[Int]]) -> Bool {
+
+    // rows are ok 
+    for i in 0..<9{
+        var valuesList = [Int]()
+        for j in 0..<9{
+            if myBoard[i][j] != 0 && valuesList.contains(myBoard[i][j]){
+                return false
+            }
+            valuesList.append(myBoard[i][j])
+        }
+
+    }
+    print("rows are fine")
+
+    // coulmns are ok 
+    for i in 0..<9{
+        var valuesList = [Int]()
+        for j in 0..<9{
+            if myBoard[j][i] != 0 && valuesList.contains(myBoard[j][i]){
+                
+                return false
+            }
+            valuesList.append(myBoard[j][i])
+        }
+
+    }
+    print("columns are fine")
+
+    // check box 
+    for i in 0..<3{
+        
+        for j in 0..<3{
+            let box_x = i
+            let box_y = j
+        
+            var valuesList = [Int]()
+            for i in (box_y*3)..<(box_y * 3 + 3){
+                for j in (box_x*3)..<(box_x * 3 + 3){
+                    if myBoard[i][j] != 0 && valuesList.contains(myBoard[i][j]){
+                      
+                        return false
+                    }
+                    valuesList.append(myBoard[i][j])
+                }
+            }
+            //print(valuesList)
+        }
+    }
+    print("boxes are fine")
+    return true
+}
+
 func main(){
     print("\n =========================================\n")
     //setMediumBoard()
+    board = openAndReadFile()
     printBoard()
+    if !isValidInput(myBoard:board){
+        print("Solution not possible board invalid")
+        return 
+    }
     if solver(){
         print("Here is a solution :")
         printBoard()
@@ -310,7 +323,8 @@ func main(){
 
 
 // ========= MAIN ========= //
-//main()
-openAndReadFile()
-//print(Int(3/3))
+main()
+
+// board = openAndReadFile()
+// print(isValidInput(myBoard:board))
 
