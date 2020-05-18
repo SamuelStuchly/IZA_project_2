@@ -1,4 +1,14 @@
+
+
+
+import Foundation
+
+
 print("Hello, world!")
+
+enum MyError: Error {
+    case runtimeError(String)
+}
 
 
  //var board = Array(repeating: Array(repeating: 0, count: 9), count: 9)
@@ -14,7 +24,7 @@ var board = [
 
     [0,0,6,8,0,0,0,0,0],
     [0,5,0,0,0,0,0,0,6],
-    [0,7,3,2,0,0,0,9,4]
+    [0,7,3,2,0,0,0,9,0]
 ]
 
 // function prints out board 
@@ -170,14 +180,14 @@ func isValid(number:Int,position:(column:Int,row:Int)) -> Bool {
 
 func solver()-> Bool{
     //print("IM in solver")
-    var foundSpot = getFirstEmptySpot()
+    let foundSpot = getFirstEmptySpot()
     if foundSpot == (-1,-1){
         //print("KONCIM")
         return true
     }
     
-    var row = foundSpot.row
-    var column = foundSpot.column
+    let row = foundSpot.row
+    let column = foundSpot.column
    
 
 
@@ -200,6 +210,89 @@ func solver()-> Bool{
     return false
 }
 
+func parseFile(content:String) throws {
+    let rows = content.components(separatedBy:"\n")
+    //print(rows)
+    var myBoard = rows.map{ $0.replacingOccurrences(of: " ", with: "") }
+    //print(myBoard)
+
+    // read the file
+    if myBoard[0] != "SUDOKU"{
+        print("MISSING TITLE")
+        throw MyError.runtimeError("INCORRECT BOARD FORMAT")
+    }
+    myBoard.removeFirst()
+
+       
+    for i in 0..<13{
+       var currentRow = Array(myBoard[i])
+       //print(currentRow)
+       var lineSepArr = [0,4,8,12]
+       if lineSepArr.contains(i) {
+           for j in currentRow{
+               if j != "-"{
+                   print("horizontal seperation not ok ")
+                   throw MyError.runtimeError("INCORRECT BOARD FORMAT")
+                   
+               }
+           }
+       }
+       else{
+           for (index,value) in currentRow.enumerated(){
+               if lineSepArr.contains(index){
+
+                    if value != "|"{
+                    print("vertical seperation not ok ")
+                    break
+                    }
+                } 
+           }
+       }
+    }
+    print("board format ok")
+
+
+    
+
+    
+}
+
+
+func openAndReadFile(){
+    let path : String
+    let args = CommandLine.arguments
+    path = args[1]
+    print(path)
+
+// -------- open the file and get data---------
+    
+    let databuffer : Data?
+    let filepath = URL(fileURLWithPath: path)
+    var str = ""
+    do {
+        databuffer = try Data(contentsOf:filepath)
+        if databuffer != nil{
+        str =  try String(decoding: databuffer!, as: UTF8.self)
+        print(str)
+    }
+        //print(type(of:databuffer))
+    }
+    catch{
+        print("COULDNT READ THE FILE")
+         //return .failure(.fileError)
+    }
+    do {
+        try parseFile(content:str)
+    }
+    catch {
+        print("Incorrect format")
+    }
+
+   
+   
+   
+}
+
 
 func main(){
     print("\n =========================================\n")
@@ -217,7 +310,7 @@ func main(){
 
 
 // ========= MAIN ========= //
-main()
-
+//main()
+openAndReadFile()
 //print(Int(3/3))
 
